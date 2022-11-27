@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Covid19</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  </head>
+  <body>
+    <div align="center" class="container">
+        <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#">COVID19-KR</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Github</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Contact</a>
+                </li>
+              </ul>
+              <span class="navbar-text">
+                Update: {{value.S_DT}}
+              </span>
+            </div>
+          </div>
+        </nav>
+
+        <div class="container text-center" style="margin-top: 30px;">
+          <div class="row">
+            <div class="col">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-subtitle mb-2 text-muted">확진자</h5>
+                  <h4 class="card-title" style="color:#F15F5F;">{{value.T_HJ}}</h4>
+                  <h6 class="card-title" style="color:#F15F5F;">+{{value.N_HJ}}</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-subtitle mb-2 text-muted">사망자</h5>
+                  <h4 class="card-title" style="color:#2F4F4F;">{{value.DEATH}}</h4>
+                  <h6 class="card-title" style="color:#2F4F4F;">+{{value.ALL_DAY_DEATH}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <div style="padding-top:50px;">
+            <h3>{{value.S_DT}} 신규합계</h3>
+            <h2 style="color:#F15F5F;"><b>{{value.N_HJ}}</b></h2>
+            <div id="chart_div"></div>
+        </div>
+      <h3>신규 확진자수 추이</h3>
+      <div id="chart_year"></div>
+
+      <footer class="footer" style="margin-top: 30px; margin-bottom: 30px">
+        <hr>
+        Copyright © 2021 Hyunmin
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', '날짜');
+        data.addColumn('number', '확진자');
+        data.addRows({{ week_data|safe }});
+
+        var year_data = new google.visualization.DataTable();
+        year_data.addColumn('string', '날짜');
+        year_data.addColumn('number', '확진자');
+        year_data.addRows({{ year_data|safe }});
+
+        // Set chart options
+        var options = {
+            colors: ['#F15F5F'],
+            vAxis: {
+                minValue: 0
+            },
+            width: '100%',
+            height: 400,
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_year'));
+        chart.draw(year_data, options);
+      }
+    </script>
+  </body>
+</html>
